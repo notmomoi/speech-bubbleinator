@@ -6,14 +6,32 @@ import { loadCommands } from './utils/loaders/commands';
 import { loadEvents } from './utils/loaders/events';
 
 const client = new Client({
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent,
+  ],
 });
 
 (async () => {
+  logger.info('Iniciando bot...');
+
+  logger.info('Cargando comandos...');
   await loadCommands(client, './src/commands');
+
+  logger.info('Cargando eventos...');
   await loadEvents(client, './src/events');
 
-  await client.login(config.token).catch((error) => logger.error(error));
+  logger.info('Conectando a Discord...');
+  try {
+    await client.login(config.token);
+    logger.info('Bot conectado correctamente');
+  } catch (error) {
+    logger.error(
+      { error: error instanceof Error ? error.message : String(error) },
+      'Fallo login del bot',
+    );
+  }
 })();
 
 process.on('SIGINT', () => {

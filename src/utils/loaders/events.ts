@@ -4,6 +4,7 @@ import { getAllFiles } from './getAllFiles';
 
 export const loadEvents = async (client: Client, dir: string) => {
   const eventFiles = getAllFiles(dir);
+  let loadedCount = 0;
 
   for (const file of eventFiles) {
     const { event } = await import(file);
@@ -14,8 +15,12 @@ export const loadEvents = async (client: Client, dir: string) => {
       } else {
         client.on(event.name, (...args) => event.execute(...args));
       }
+
+      loadedCount += 1;
     } else {
       logger.warn(`invalid event file: ${file}`);
     }
   }
+
+  logger.info({ loadedCount }, 'Eventos cargados');
 };

@@ -32,9 +32,27 @@ export const event: Event<Events.InteractionCreate> = {
     cooldown.set(interaction.user.id);
 
     try {
+      logger.info(
+        {
+          commandName: interaction.commandName,
+          userId: interaction.user.id,
+          guildId: interaction.guildId,
+        },
+        'Ejecutando comando slash',
+      );
+
       await command.execute(interaction);
     } catch (error) {
-      logger.error(error);
+      logger.error(
+        {
+          commandName: interaction.commandName,
+          userId: interaction.user.id,
+          guildId: interaction.guildId,
+          error: error instanceof Error ? error.message : String(error),
+        },
+        'Error al ejecutar comando slash',
+      );
+
       if (interaction.replied || interaction.deferred) {
         await interaction.followUp({
           content: 'There was an error while executing this command.',
