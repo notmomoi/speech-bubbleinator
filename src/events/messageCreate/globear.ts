@@ -5,7 +5,7 @@ import { applySpeechBubble } from '@/utils/speechBubble';
 import type { Event } from '@/utils/types/event';
 
 const PREFIX = '-';
-const COMMANDS = new Set(['globo-de-sexo', 'globear']);
+const COMMANDS = new Set(['globo-de-texto', 'globear']);
 const DEFAULT_UPLOAD_LIMIT = 10 * 1024 * 1024;
 const PREMIUM_TIER_UPLOAD_LIMITS: Record<number, number> = {
   0: 10 * 1024 * 1024,

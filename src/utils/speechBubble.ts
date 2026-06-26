@@ -14,11 +14,11 @@ const BUBBLE_ASSET_PATH = fileURLToPath(
 const BUBBLE_BUFFER_PROMISE = readFile(BUBBLE_ASSET_PATH);
 const BUBBLE_METADATA_PROMISE = sharp(BUBBLE_ASSET_PATH).metadata();
 const FFMPEG_TIMEOUT_MS = 45_000;
-const BUBBLE_WIDTH_RATIO = 0.96;
-const BUBBLE_TOP_MARGIN_RATIO = 0.02;
-const BUBBLE_TOP_MARGIN_MIN = 6;
-const HEADER_BREATHING_RATIO = 0.04;
-const HEADER_BREATHING_MIN = 16;
+const BUBBLE_WIDTH_RATIO = 1;
+const BUBBLE_TOP_MARGIN_RATIO = 0.01;
+const BUBBLE_TOP_MARGIN_MIN = 2;
+const HEADER_BREATHING_RATIO = 0.02;
+const HEADER_BREATHING_MIN = 4;
 
 export interface SpeechBubbleResult {
   buffer: Buffer;
@@ -188,7 +188,7 @@ const processImage = async (
     Math.round(metadata.height * HEADER_BREATHING_RATIO),
   );
   const topPadding = bubbleTop + bubbleHeight + headerBreathingRoom;
-  const left = Math.round((metadata.width - bubbleWidth) / 2);
+  const left = 0;
   const bubbleOverlay = await sharp(await BUBBLE_BUFFER_PROMISE)
     .resize({
       width: bubbleWidth,
@@ -246,7 +246,7 @@ const processAnimatedOrVideo = async (
   const headerBreathingExpr = `max(${HEADER_BREATHING_MIN}\\,ih*${HEADER_BREATHING_RATIO})`;
   const topPaddingExpr = `${bubbleHeightExpr}+${bubbleTopPadExpr}+${headerBreathingExpr}`;
   const overlayGraph =
-    `[1:v][0:v]scale2ref=w=iw*${BUBBLE_WIDTH_RATIO}:h=ow/mdar:flags=lanczos[bubble][base];` +
+    `[1:v][0:v]scale2ref=w=rw*${BUBBLE_WIDTH_RATIO}:h=ow/mdar:flags=lanczos[bubble][base];` +
     `[base]pad=w=iw:h=ih+${topPaddingExpr}:x=0:y=${topPaddingExpr}:color=white[padded];` +
     `[padded][bubble]overlay=x=(W-w)/2:y=${bubbleTopOverlayExpr}:format=auto:shortest=0:eof_action=repeat[overlayed]`;
 
